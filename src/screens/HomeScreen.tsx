@@ -6,6 +6,7 @@ import {
   Modal,
   StyleSheet,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import {getRandomActivity} from '../api/boredAPI';
 import ActivityCard from '../components/ActivityCard';
@@ -17,6 +18,8 @@ const HomeScreen = () => {
   const [activity, setActivity] = useState<Activity | undefined>();
   const [selectedType, setSelectedType] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
 
   const activityType = useRef('random');
 
@@ -25,8 +28,15 @@ const HomeScreen = () => {
   }, []);
 
   const fetchActivity = async () => {
+    setLoading(true);
+    setApiError(null);
     const data = await getRandomActivity(activityType.current);
+    if (data?.error) {
+      setLoading(false);
+      return setApiError('Failed to fetch activity, please try again');
+    }
     setActivity(data);
+    setLoading(false);
   };
 
   const handleDonePress = () => {
@@ -88,8 +98,12 @@ const HomeScreen = () => {
           </View>
         </View>
       </Modal>
-
-      {activity && <ActivityCard activity={activity} />}
+      {loading && <ActivityIndicator size="large" color="gray" />}
+      {apiError ? (
+        <Text style={styles.errorText}>{apiError}</Text>
+      ) : (
+        activity && <ActivityCard activity={activity} />
+      )}
       <TouchableOpacity style={styles.buttonActivity} onPress={fetchActivity}>
         <Text style={styles.buttonActivityText}>Get New Activity</Text>
       </TouchableOpacity>
@@ -162,15 +176,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingLeft: 5,
   },
-  // errorText: {
-  //   color: 'red',
-  //   textAlign: 'center',
-  //   marginVertical: 10,
-  // },
-  // loading: {
-  //   fontSize: 16,
-  //   textAlign: 'center',
-  // },
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginVertical: 10,
+    fontSize: 16,
+  },
 });
 
 export default HomeScreen;
