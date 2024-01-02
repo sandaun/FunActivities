@@ -10,12 +10,7 @@ const FavoritesScreen: React.FC = () => {
     <View style={styles.content}>
       <FlatList
         data={favorites}
-        renderItem={({item}) => (
-          <ActivityCard
-            activity={item}
-            // showFavoriteButton={true} // or false, depending on your design
-          />
-        )}
+        renderItem={({item}) => <ActivityCard activity={item} />}
         keyExtractor={item => item.activity}
       />
     </View>
