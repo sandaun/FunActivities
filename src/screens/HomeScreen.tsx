@@ -7,7 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import {getRandomActivity} from '../api/BoredAPI';
+import {getRandomActivity} from '../api/boredAPI';
 import ActivityCard from '../components/ActivityCard';
 import {Picker} from '@react-native-picker/picker';
 import FilterLogo from '../assets/filter.svg';
