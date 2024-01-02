@@ -1,9 +1,10 @@
 import React from 'react';
-import {View, Text, Button, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Activity} from '../types/activityTypes';
 import {useAppDispatch} from '../app/hooks';
 import {toggleFavorite} from '../features/favoritesSlice';
 import {useFavorites} from '../hooks/useFavorites';
+import HeartIcon from '../assets/heart.svg';
 
 type Props = {
   activity: Activity;
@@ -20,13 +21,19 @@ const ActivityCard: React.FC<Props> = ({activity}) => {
 
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>{activity.activity}</Text>
+      <View style={styles.titleWrapper}>
+        <Text style={styles.title}>{activity.activity}</Text>
+        <TouchableOpacity onPress={handleToggleFavorite}>
+          <HeartIcon
+            width={20}
+            height={20}
+            fill={isFavorite(activity) ? 'tomato' : 'transparent'}
+            stroke={'tomato'}
+          />
+        </TouchableOpacity>
+      </View>
       <Text style={styles.info}>Type: {activity.type}</Text>
       <Text style={styles.info}>Participants: {activity.participants}</Text>
-      <Button
-        title={isFavorite(activity) ? 'Unfavorite' : 'Favorite'}
-        onPress={handleToggleFavorite}
-      />
     </View>
   );
 };
@@ -43,10 +50,16 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     elevation: 5,
   },
+  titleWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
   title: {
+    flex: 1,
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginRight: 10,
   },
   info: {
     fontSize: 14,
